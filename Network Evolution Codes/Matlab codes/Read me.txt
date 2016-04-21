@@ -1,0 +1,17 @@
+File nomenclature:
+
+plotBurstData0.m -- plots raster plot of network activity
+CCyPlot.m -- plot successive evolution of cummulative curves
+tempSynEE0a.m -- Plots synaptic distribution within evolved excitatory network
+ConnectTopologyEE0.m -- plots synapses among neurons rich with outgoing and incomming synapses
+tempSynIE0b.m -- Plots synaptic distribution within evolved composite network
+jetplot.m -- a function file used by tempSynEE0a.m, ConnectTopologyEE0.m and tempSynIE0b.m
+
+
+Folder nomenclature:
+
+IsoNeuronActivity -- contains simulated data files corresponding to synaptically isolated activity of network neurons at two different g_tonic values
+			(g_tonic = 0.10 and g_tonic = 0.34)
+
+DataSet0 -- contains simulated data files for evolution of excitatory network
+DataSet1 -- contains simulated data files for evolution of composite network

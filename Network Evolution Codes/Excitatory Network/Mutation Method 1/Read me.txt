@@ -1,0 +1,12 @@
+File nomenclature:
+
+random_hill_climbing2.cpp -- main C++ code
+Network.cpp -- Network class file
+Network.h -- Network header file
+OneNeuron.cpp -- class file for single neuron dynamics
+OneNeuron.h -- header file
+run1.sh -- program used to submit the job on Super-Computer
+
+
+ExptSyn3300.txt -- Data file containing desired objective function-1,
+NeuronProp82A3300 --  Data file containing neuronal properties (g_NaP/g_Leak) of 82 neurons, however, last two neurons are "dummy"!

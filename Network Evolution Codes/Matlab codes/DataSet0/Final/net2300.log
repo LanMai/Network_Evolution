@@ -1,0 +1,489 @@
+
+INTERVALS - Master process:
+  C++ version
+
+  Random-restart hill climbing program,
+
+  The number of processes is 22
+
+Process 3: Active!
+
+Process 4: Active!
+
+
+Process 8: Active!
+
+Process 9: Active!
+
+Process 10: Active!
+
+Process 11: Active!
+
+Process 12: Active!
+
+Process 15: Active!
+
+Process 16: Active!
+
+Process 17: Active!
+
+Process 20: Active!
+
+Process 21: Active!
+
+Process 0: Active!
+
+Process 1: Active!
+
+Process 2: Active!
+
+Process 6: Active!
+
+Process 13: Active!
+
+Process 14: Active!
+
+Process 18: Active!
+
+Process 19: Active!
+Process 5: Active!
+
+Process 7: Active!
+process_id : 7 z = 2
+process_id: 7	 EEsum_before =  648
+process_id: 7	 EIsum_before =  16
+process_id: 7	 IEsum_before =  16
+process_id: 7	 IIsum_before =  0
+process_id: 7	 EEsum_after =  648
+process_id: 7	 EIsum_after =  16
+process_id: 7	 IEsum_after =  16
+process_id : 6 z = 2
+process_id: 6	 EEsum_before =  648
+process_id: 6	 EIsum_before =  16
+process_id: 6	 IEsum_before =  16
+process_id: 6	 IIsum_before =  0
+process_id: 6	 EEsum_after =  648
+process_id: 6	 EIsum_after =  16
+process_id: 6	 IEsum_after =  16
+process_id: 6	 IIsum_after =  0
+process_id: 7	 IIsum_after =  0
+process_id: 7  t = 0
+process_id: 6  t = 0
+process_id : 13 z = 2
+process_id : 11 z = 2
+process_id: 11	 EEsum_before =  648
+process_id: 11	 EIsum_before =  16
+process_id: 11	 IEsum_before =  16
+process_id: 11	 IIsum_before =  0
+process_id: 11	 EEsum_after =  648
+process_id: 11	 EIsum_after =  16
+process_id: 11	 IEsum_after =  16
+process_id: 11	 IIsum_after =  0
+process_id: 13	 EEsum_before =  648
+process_id: 13	 EIsum_before =  16
+process_id : 9 z = 2
+process_id: 9	 EEsum_before =  648
+process_id: 9	 EIsum_before =  16
+process_id: 9	 IEsum_before =  16
+process_id: 9	 IIsum_before =  0
+process_id : 10 z = 2
+process_id: 10	 EEsum_before =  648
+process_id: 10	 EIsum_before =  16
+process_id: 10	 IEsum_before =  16
+process_id: 10	 IIsum_before =  0
+process_id: 9	 EEsum_after =  648
+process_id: 9	 EIsum_after =  16
+process_id: 9	 IEsum_after =  16
+process_id: 9	 IIsum_after =  0
+process_id: 10	 EEsum_after =  648
+process_id: 10	 EIsum_after =  16
+process_id: 10	 IEsum_after =  16
+process_id: 10	 IIsum_after =  0
+process_id : 3 z = 2
+process_id: 3	 EEsum_before =  648
+process_id: 3	 EIsum_before =  16
+process_id: 3	 IEsum_before =  16
+process_id: 3	 IIsum_before =  0
+process_id : 16 z = 2
+process_id: 16	 EEsum_before =  648
+process_id: 16	 EIsum_before =  16
+process_id: 16	 IEsum_before =  16
+process_id: 16	 IIsum_before =  0
+process_id: 3	 EEsum_after =  648
+process_id: 3	 EIsum_after =  16
+process_id: 3	 IEsum_after =  16
+process_id: 3	 IIsum_after =  0
+process_id: 13	 IEsum_before =  16
+process_id: 13	 IIsum_before =  0
+process_id: 13	 EEsum_after =  648
+process_id: 13	 EIsum_after =  16
+process_id: 13	 IEsum_after =  16
+process_id: 13	 IIsum_after =  0
+process_id: 16	 EEsum_after =  648
+process_id: 16	 EIsum_after =  16
+process_id: 16	 IEsum_after =  16
+process_id : 2 z = 2
+process_id: 2	 EEsum_before =  648
+process_id: 2	 EIsum_before =  16
+process_id: 2	 IEsum_before =  16
+process_id: 2	 IIsum_before =  0
+process_id: 16	 IIsum_after =  0
+process_id : 8 z = 2
+process_id: 8	 EEsum_before =  648
+process_id: 8	 EIsum_before =  16
+process_id: 8	 IEsum_before =  16
+process_id: 8	 IIsum_before =  0
+process_id: 2	 EEsum_after =  648
+process_id: 2	 EIsum_after =  16
+process_id: 2	 IEsum_after =  16
+process_id: 2	 IIsum_after =  0
+process_id: 8	 EEsum_after =  648
+process_id: 8	 EIsum_after =  16
+process_id: 8	 IEsum_after =  16
+process_id: 8	 IIsum_after =  0
+process_id : 17 z = 2
+process_id: 17	 EEsum_before =  648
+process_id: 17	 EIsum_before =  16
+process_id: 17	 IEsum_before =  16
+process_id: 17	 IIsum_before =  0
+process_id: 17	 EEsum_after =  648
+process_id: 17	 EIsum_after =  16
+process_id: 17	 IEsum_after =  16
+process_id: 17	 IIsum_after =  0
+process_id : 12 z = 2
+process_id: 12	 EEsum_before =  648
+process_id: 12	 EIsum_before =  16
+process_id: 12	 IEsum_before =  16
+process_id: 12	 IIsum_before =  0
+process_id : 5 z = 2
+process_id: 12	 EEsum_after =  648
+process_id: 12	 EIsum_after =  16
+process_id: 12	 IEsum_after =  16
+process_id: 12	 IIsum_after =  0
+process_id: 5	 EEsum_before =  648
+process_id : 19 z = 2
+process_id: 19	 EEsum_before =  648
+process_id: 19	 EIsum_before =  16
+process_id: 19	 IEsum_before =  16
+process_id: 19	 IIsum_before =  0
+process_id: 19	 EEsum_after =  648
+process_id: 19	 EIsum_after =  16
+process_id: 19	 IEsum_after =  16
+process_id: 19	 IIsum_after =  0
+process_id: 5	 EIsum_before =  16
+process_id : 4 z = 2
+process_id: 4	 EEsum_before =  648
+process_id: 4	 EIsum_before =  16
+process_id: 4	 IEsum_before =  16
+process_id: 4	 IIsum_before =  0
+process_id: 4	 EEsum_after =  648
+process_id: 4	 EIsum_after =  16
+process_id: 4	 IEsum_after =  16
+process_id: 4	 IIsum_after =  0
+process_id : 1 z = 2
+process_id: 1	 EEsum_before =  648
+process_id: 1	 EIsum_before =  16
+process_id: 1	 IEsum_before =  16
+process_id: 1	 IIsum_before =  0
+process_id: 5	 IEsum_before =  16
+process_id: 1	 EEsum_after =  648
+process_id: 1	 EIsum_after =  16
+process_id: 1	 IEsum_after =  16
+process_id: 1	 IIsum_after =  0
+process_id : 14 z = 2
+process_id: 14	 EEsum_before =  648
+process_id: 14	 EIsum_before =  16
+process_id: 14	 IEsum_before =  16
+process_id: 14	 IIsum_before =  0
+process_id: 5	 IIsum_before =  0
+process_id: 14	 EEsum_after =  648
+process_id: 14	 EIsum_after =  16
+process_id: 14	 IEsum_after =  16
+process_id: 14	 IIsum_after =  0
+process_id: 5	 EEsum_after =  648
+process_id: 5	 EIsum_after =  16
+process_id: 5	 IEsum_after =  16
+process_id: 5	 IIsum_after =  0
+process_id : 20 z = 2
+process_id : 18 z = 2
+process_id: 20	 EEsum_before =  648
+process_id: 20	 EIsum_before =  16
+process_id: 20	 IEsum_before =  16
+process_id: 20	 IIsum_before =  0
+process_id: 18	 EEsum_before =  648
+process_id: 18	 EIsum_before =  16
+process_id: 18	 IEsum_before =  16
+process_id: 18	 IIsum_before =  0
+process_id: 18	 EEsum_after =  648
+process_id: 18	 EIsum_after =  16
+process_id: 18	 IEsum_after =  16
+process_id: 18	 IIsum_after =  0
+process_id : 21 z = 2
+process_id: 20	 EEsum_after =  648
+process_id: 21	 EEsum_before =  648
+process_id: 21	 EIsum_before =  16
+process_id: 21	 IEsum_before =  16
+process_id: 21	 IIsum_before =  0
+process_id : 15 z = 2
+process_id: 21	 EEsum_after =  648
+process_id: 21	 EIsum_after =  16
+process_id: 21	 IEsum_after =  16
+process_id: 21	 IIsum_after =  0
+process_id: 15	 EEsum_before =  648
+process_id: 15	 EIsum_before =  16
+process_id: 15	 IEsum_before =  16
+process_id: 15	 IIsum_before =  0
+process_id: 20	 EIsum_after =  16
+process_id: 20	 IEsum_after =  16
+process_id: 20	 IIsum_after =  0
+process_id: 15	 EEsum_after =  648
+process_id: 15	 EIsum_after =  16
+process_id: 15	 IEsum_after =  16
+process_id: 15	 IIsum_after =  0
+process_id: 11  t = 0
+process_id: 13  t = 0
+process_id: 9  t = 0
+process_id: 3  t = 0
+process_id: 16  t = 0
+process_id: 2  t = 0
+process_id: 8  t = 0
+process_id: 1  t = 0
+process_id: 18  t = 0
+process_id: 12  t = 0
+process_id: 4  t = 0
+process_id: 14  t = 0
+process_id: 21  t = 0
+process_id: 15  t = 0
+process_id: 20  t = 0
+process_id: 19  t = 0
+process_id: 10  t = 0
+process_id: 17  t = 0
+process_id: 5  t = 0
+process_id: 6  t = 50000
+process_id: 2  t = 50000
+process_id: 7  t = 50000
+process_id: 4  t = 50000
+process_id: 16  t = 50000
+process_id: 3  t = 50000
+process_id: 5  t = 50000
+process_id: 11  t = 50000
+process_id: 13  t = 50000
+process_id: 8  t = 50000
+process_id: 18  t = 50000
+process_id: 9  t = 50000
+process_id: 19  t = 50000
+process_id: 20  t = 50000
+process_id: 10  t = 50000
+process_id: 21  t = 50000
+process_id: 17  t = 50000
+process_id: 15  t = 50000
+process_id: 1  t = 50000
+process_id: 14  t = 50000
+process_id: 12  t = 50000
+process_id: 6  t = 100000
+process_id: 7  t = 100000
+process_id: 4  t = 100000
+process_id: 5  t = 100000
+process_id: 2  t = 100000
+process_id: 3  t = 100000
+process_id: 16  t = 100000
+process_id: 18  t = 100000
+process_id: 10  t = 100000
+process_id: 1  t = 100000
+process_id: 19  t = 100000
+process_id: 8  t = 100000
+process_id: 13  t = 100000
+process_id: 9  t = 100000
+process_id: 11  t = 100000
+process_id: 17  t = 100000
+process_id: 20  t = 100000
+process_id: 15  t = 100000
+process_id: 21  t = 100000
+process_id: 14  t = 100000
+process_id: 12  t = 100000
+process_id: 4  t = 150000
+process_id: 6  t = 150000
+process_id: 5  t = 150000
+process_id: 7  t = 150000
+process_id: 3  t = 150000
+process_id: 2  t = 150000
+process_id: 16  t = 150000
+process_id: 1  t = 150000
+process_id: 18  t = 150000
+process_id: 10  t = 150000
+process_id: 8  t = 150000
+process_id: 19  t = 150000
+process_id: 9  t = 150000
+process_id: 13  t = 150000
+process_id: 20  t = 150000
+process_id: 17  t = 150000
+process_id: 11  t = 150000
+process_id: 21  t = 150000
+process_id: 15  t = 150000
+process_id: 14  t = 150000
+process_id: 12  t = 150000
+process_id: 4 BLcount = 874
+process_id: 4 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 4	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 4  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 4  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 6 BLcount = 874
+process_id: 6 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 6	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 6  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 6  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 5 BLcount = 874
+process_id: 5 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 5	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 5  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 5  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 7 BLcount = 874
+process_id: 7 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 7	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 7  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 7  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 3 BLcount = 874
+process_id: 3 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 3	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 3  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 3  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 1 BLcount = 874
+process_id: 1 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 1	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 1  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 1  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 2 BLcount = 874
+process_id: 2 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 2	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 2  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 2  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 16 BLcount = 874
+process_id: 16 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 16	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 16  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 16  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 18 BLcount = 874
+process_id: 18 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 18	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 18  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 18  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 10 BLcount = 874
+process_id: 10 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 10	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 10  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 10  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 8 BLcount = 874
+process_id: 8 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 8	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 8  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 8  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 19 BLcount = 874
+process_id: 19 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 19	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 19  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 19  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 20 BLcount = 874
+process_id: 20 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 20	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 20  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 20  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 17 BLcount = 874
+process_id: 17 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 17	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 17  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 17  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 9 BLcount = 874
+process_id: 9 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 9	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 9  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 9  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 13 BLcount = 874
+process_id: 13 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 13	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 13  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 13  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 11 BLcount = 874
+process_id: 11 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 11	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 11  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 11  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 21 BLcount = 874
+process_id: 21 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 21	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 21  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 21  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 15 BLcount = 874
+process_id: 15 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 15	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 15  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 15  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 14 BLcount = 874
+process_id: 14 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 14	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 14  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 14  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+process_id: 12 BLcount = 874
+process_id: 12 PopBurstCount = 20; PopBurstInterval = 43.7368; PopBurstInterval(s) = 6.99789
+process_id: 12	 SporadicBurstPossible = 58907	 SporadicBurstCount = 843	 SporadicFrac = 1.43107
+process_id: 12  Error1 = 0.195312  Error2 = 4.43213e-07  Error3 = 0
+process_id: 12  Error1F = 0.999998  Error2F = 2.26925e-06  Error3F = 0
+EvalArrayIndexB[0] = 1	 EvalArrayB[0] = 0.195313	 Eval2ArrayB[0] = 5752
+EvalArrayIndexB[1] = 2	 EvalArrayB[1] = 0.195313	 Eval2ArrayB[1] = 5752
+EvalArrayIndexB[2] = 3	 EvalArrayB[2] = 0.195313	 Eval2ArrayB[2] = 5752
+EvalArrayIndexB[3] = 4	 EvalArrayB[3] = 0.195313	 Eval2ArrayB[3] = 5752
+EvalArrayIndexB[4] = 5	 EvalArrayB[4] = 0.195313	 Eval2ArrayB[4] = 5752
+EvalArrayIndexB[5] = 6	 EvalArrayB[5] = 0.195313	 Eval2ArrayB[5] = 5752
+EvalArrayIndexB[6] = 7	 EvalArrayB[6] = 0.195313	 Eval2ArrayB[6] = 5752
+EvalArrayIndexB[7] = 8	 EvalArrayB[7] = 0.195313	 Eval2ArrayB[7] = 5752
+EvalArrayIndexB[8] = 9	 EvalArrayB[8] = 0.195313	 Eval2ArrayB[8] = 5752
+EvalArrayIndexB[9] = 10	 EvalArrayB[9] = 0.195313	 Eval2ArrayB[9] = 5752
+EvalArrayIndexB[10] = 11	 EvalArrayB[10] = 0.195313	 Eval2ArrayB[10] = 5752
+EvalArrayIndexB[11] = 12	 EvalArrayB[11] = 0.195313	 Eval2ArrayB[11] = 5752
+EvalArrayIndexB[12] = 13	 EvalArrayB[12] = 0.195313	 Eval2ArrayB[12] = 5752
+EvalArrayIndexB[13] = 14	 EvalArrayB[13] = 0.195313	 Eval2ArrayB[13] = 5752
+EvalArrayIndexB[14] = 15	 EvalArrayB[14] = 0.195313	 Eval2ArrayB[14] = 5752
+EvalArrayIndexB[15] = 16	 EvalArrayB[15] = 0.195313	 Eval2ArrayB[15] = 5752
+EvalArrayIndexB[16] = 17	 EvalArrayB[16] = 0.195313	 Eval2ArrayB[16] = 5752
+EvalArrayIndexB[17] = 18	 EvalArrayB[17] = 0.195313	 Eval2ArrayB[17] = 5752
+EvalArrayIndexB[18] = 19	 EvalArrayB[18] = 0.195313	 Eval2ArrayB[18] = 5752
+EvalArrayIndexB[19] = 20	 EvalArrayB[19] = 0.195313	 Eval2ArrayB[19] = 5752
+EvalArrayIndexB[20] = 21	 EvalArrayB[20] = 0.195313	 Eval2ArrayB[20] = 5752
+EvalArrayA[21] = 0.195313	 Eval2ArrayA[21] = 5752
+EvalArrayA[20] = 0.195313	 Eval2ArrayA[20] = 5752
+EvalArrayA[19] = 0.195313	 Eval2ArrayA[19] = 5752
+EvalArrayA[18] = 0.195313	 Eval2ArrayA[18] = 5752
+EvalArrayA[17] = 0.195313	 Eval2ArrayA[17] = 5752
+EvalArrayA[16] = 0.195313	 Eval2ArrayA[16] = 5752
+EvalArrayA[15] = 0.195313	 Eval2ArrayA[15] = 5752
+EvalArrayA[14] = 0.195313	 Eval2ArrayA[14] = 5752
+EvalArrayA[13] = 0.195313	 Eval2ArrayA[13] = 5752
+EvalArrayA[12] = 0.195313	 Eval2ArrayA[12] = 5752
+EvalArrayA[11] = 0.195313	 Eval2ArrayA[11] = 5752
+EvalArrayA[10] = 0.195313	 Eval2ArrayA[10] = 5752
+EvalArrayA[9] = 0.195313	 Eval2ArrayA[9] = 5752
+EvalArrayA[8] = 0.195313	 Eval2ArrayA[8] = 5752
+EvalArrayA[7] = 0.195313	 Eval2ArrayA[7] = 5752
+EvalArrayA[6] = 0.195313	 Eval2ArrayA[6] = 5752
+EvalArrayA[5] = 0.195313	 Eval2ArrayA[5] = 5752
+EvalArrayA[4] = 0.195313	 Eval2ArrayA[4] = 5752
+EvalArrayA[3] = 0.195313	 Eval2ArrayA[3] = 5752
+EvalArrayA[2] = 0.195313	 Eval2ArrayA[2] = 5752
+EvalArrayA[1] = 0.195313	 Eval2ArrayA[1] = 5752
+0	 bp_id = 1	 ncNewBest[0] = 0.195313
+1	 bp_id = 2	 ncNewBest[1] = 0.195313
+2	 bp_id = 3	 ncNewBest[2] = 0.195313
+ErrorSum_new = 0.195313 	 ErrorSum_old = 5000
+Error2_new = 5752 	 Error2_old = 0
+p = 1	 pp = 0	 pastBest = 0
+
+ 
+ Iteration 0 complete !!! 
+ 
+ 
+
+completed!!!
+
+  Elapsed wall clock seconds = 191.98
+
+INTERVALS - Master process:
+  Normal end of execution.

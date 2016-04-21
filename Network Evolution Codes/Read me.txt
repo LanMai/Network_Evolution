@@ -1,0 +1,8 @@
+Folder nomenclature:
+
+Excitatory Network -- contains C++ code for evolving excitatory network
+Composite Network -- contains C++ code for evolving composite network
+Small World Network -- contains C++ code for evolving Small World network
+Matlab codes -- contains matlab files which may be used to plot data files obtained from C++ codes
+
+Each folder contains a "Read me" file providing further details.

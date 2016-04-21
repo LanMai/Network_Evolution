@@ -1,0 +1,802 @@
+# include <cstdlib>
+# include <iostream>
+# include <iomanip>
+# include <cmath>
+# include <ctime>
+# include <sstream>
+# include <fstream>
+# include "string.h"
+# include "Network.h"
+# include "OneNeuron.h"
+
+#define NOI 150 // no. of positive iterations of hill-climbing
+#define CCxbins 50 // no. of bins into which x-axis (-1 to +1) should be divided
+#define NCP 22	// no. of processes utilized
+#define NoBestNGs 3 // no. of best neuronal groups to be slected for next generation
+
+using namespace std;
+
+# include "mpi.h"
+
+//int main ( int argc, char *argv[] );
+
+//****************************************************************************80
+
+int main ( int argc, char *argv[] )
+
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    MAIN is the main program for Random-restart hill climbing.
+//
+//  Discussion:
+//
+//    Random-restart hill climbing iteratively does hill-climbing, each time
+//    with the same initial condition x0. The best netconfig is kept:
+//    if a new run of hill climbing produces a better netconfig than the stored state,
+//    it replaces the stored state.
+//
+//    We assume we have N processors available.
+//
+//    Processor 0 is designated the master processor, assigned
+//    to comparing the output from other processors with the stored value.
+//
+//    For I = 1 to N-1, processor I is assigned the same initial condition,
+//    performs network mutation and simulation, and provides the estimation function.
+//
+//    COMMUNICATION:
+//
+//    Processor I communicates to processor 0 the initial condition and
+//    the estimation function.
+//
+//  Modified:
+//
+//    3 June 2010
+//
+//  Author:
+//
+//    Yoshitaka Oku
+//
+
+{
+	int Job_id = 4300;
+	double start_time;
+	double end_time;
+	int master = 0;
+	int process;
+	int process_id;
+	int file_id;
+	int process_num;
+	int blocklens_send[4];
+	MPI::Datatype mtype_send[4];
+	MPI::Datatype network_condition;
+	int blocklens_receive[4];
+	MPI::Datatype mtype_receive[4];
+	MPI::Datatype simulation_result;
+	//int received;
+	int source;
+	MPI::Status status;
+	int tag;
+	int target;
+	int best_process_id;
+	double ErrorSum_old = Error_Max;
+	double ErrorSum_new = Error_Max;
+	double Error2_old = 0;
+	double Error2_new = 0;
+	bool First_Time = true;
+	bool Pre_Mutation;
+	int iter_Count = 0;
+	int iter_Limit = 1; //301;
+	int p = 0; // positive iteration count
+	int pp = 0; // sub-positive iteration count
+	int pastBest = 0;
+	int pastBestLimit = 250; // 50
+
+	const double T = 180000; //ms
+	const double Tws = 40000; //ms; Data writing begin
+	double t_dispStep = 50000;
+	double t_saveStep = 1.0; //ms
+
+	double Cyy[CCxbins+1][NOI+1];
+	for (int i=0; i<=CCxbins; i++)
+	{
+		for (int j=0; j<=NOI; j++)
+		{
+			Cyy[i][j] = 0;
+		}
+	}
+
+	double Cy0[CCxbins+1][NCP-1];
+	for (int i=0; i<=CCxbins; i++)
+	{
+		for (int j=0; j<NCP-1; j++)
+		{
+			Cy0[i][j] = 0;
+		}
+	}
+	
+	//int inSynV[NoN];
+	//int outSynV[NoN];
+	int inSyn[NoN][NOI+1];
+	int outSyn[NoN][NOI+1];
+	for (int i=0; i<NoN; i++)
+	{
+		for (int j=0; j<=NOI; j++)
+		{
+			inSyn[i][j] = 0;
+			outSyn[i][j] = 0;
+		}
+	}
+	
+	//
+	//  Establish the MPI environment.
+	//
+	MPI::Init ( argc, argv );
+	//
+	//  Determine this processes's rank.
+	//
+	process_id = MPI::COMM_WORLD.Get_rank ( );
+	file_id = process_id + Job_id;
+	//
+	//  Get the number of processes.
+	//
+	process_num = MPI::COMM_WORLD.Get_size (  );
+	netconfig_cond nc1, nc2, nc[NCP], ncPastBest[NoBestNGs], ncNewBest[NoBestNGs];
+	netconfig_result nr1, nr[NCP], nrPastBest[NoBestNGs], nrNewBest[NoBestNGs];
+	//
+	//  Say hello (once), and shut down right away unless we
+	//  have at least 2 processes available.
+	//
+
+	if ( process_id == master )
+	{
+		cout << "\n";
+		cout << "INTERVALS - Master process:\n";
+		cout << "  C++ version\n";
+		cout << "\n";
+		cout << "  Random-restart hill climbing program,\n";
+		cout << "\n";
+		cout << "  The number of processes is " << process_num << "\n";
+		
+		start_time = MPI::Wtime ( );
+
+		/*if ( process_num <= 1 )
+		{
+			cout << "\n";
+			cout << "INTERVALS - Master process:\n";
+			cout << "  Need at least 2 processes!\n";
+			MPI::Finalize ( );
+			cout << "\n";
+			cout << "INTERVALS - Master process:\n";
+			cout << "  Abnormal end of execution.\n";
+			exit ( 1 );
+		}*/
+
+		if ( (process_num-1)<=NoBestNGs ||  (process_num-1)%NoBestNGs != 0 )
+		{
+			cout << "\n";
+			cout << "INTERVALS - Master process:\n";
+			cout << "  Need at least " << NoBestNGs+1 << " processes!\n";
+			cout << "  No. of process should be P x " << NoBestNGs << " + 1 !!! \n";
+			MPI::Finalize ( );
+			cout << "\n";
+			cout << "INTERVALS - Master process:\n";
+			cout << "  Abnormal end of execution.\n";
+			exit ( 1 );
+		}
+
+
+	}
+
+	netconfig_param netparam;	
+	netparam.synS = 0.48; //0.016; // 0.32; // synaptic strength		
+	netparam.synSinh = 0.0; //0.05; // 0.10; // inhibitory synaptic strength	
+	netparam.SynFrac = 0.1; // fraction of all-to-all connectivity
+	netparam.SynFracEI = 0.1; 
+	netparam.SynFracIE = 0.1;
+	netparam.SynFracII = 0.1; 
+	netparam.mutFrac = 0.1; // fraction of synaptic connections to be mutated	
+	netparam.synDelete = 6; // no. of synaptic connections to be deleted	
+	netparam.synIncrease = 6;  // no. of synaptic connections to be added		
+	netparam.tonicConductance = 0.10;
+	netparam.tonicConductanceI = 0.10; // for inhibitory neurons
+	
+	pBC::Network nw(netparam, process_id,file_id,Job_id);
+
+	//
+	//  Define and commit the new datatype.
+	//
+	blocklens_send[0] = 1;
+	mtype_send[0] = MPI::INT;
+	blocklens_send[1] = NoN;
+	mtype_send[1] = MPI::DOUBLE;
+	blocklens_send[2] = NoN;
+	mtype_send[2] = MPI::DOUBLE;
+	blocklens_send[3] = NoN * NoN;
+	mtype_send[3] = MPI::INT;
+	const MPI::Aint indices_send[4] = {
+		 0,
+		 sizeof(int),
+		 sizeof(int) + sizeof(double) * NoN,
+		 sizeof(int) + sizeof(double) * NoN * 2
+	};
+	network_condition =
+		MPI::Datatype::Create_struct(4, blocklens_send, indices_send, mtype_send );
+	network_condition.Commit();
+
+	blocklens_receive[0] = 1;
+	mtype_receive[0] = MPI::DOUBLE;
+	blocklens_receive[1] = 1;
+	mtype_receive[1] = MPI::DOUBLE;
+	blocklens_receive[2] = CCxbins + 1;
+	mtype_receive[2] = MPI::DOUBLE;
+	blocklens_receive[3] = CCxbins + 1;
+	mtype_receive[3] = MPI::DOUBLE;
+	const MPI::Aint indices_receive[4] = {
+		  0,
+		  sizeof(double),
+		  sizeof(double)*2,
+		  sizeof(double) * (CCxbins + 3)
+	};
+	simulation_result =
+		MPI::Datatype::Create_struct(4, blocklens_receive, indices_receive, mtype_receive );
+	simulation_result.Commit();
+
+	cout << "\n";
+	cout << "Process " << process_id << ": Active!\n";
+
+	//while ( (pastBest<pastBestLimit && iter_Count<iter_Limit) && p<NOI )
+	while (iter_Count<iter_Limit )
+	{
+		if ( process_id != master )
+		{			
+			if (First_Time)
+			{
+				int z1 = 0;
+				//nc2 = nw.InitializeG(z1); //Graded Synapses
+				nc2 = nw.Initialize(z1);
+
+				/*int z = 0;
+				int n0 = 8;
+				double q = 0.05; //probability with which each edge is randomly altered
+				nc1 = nw.InitializeSmallWorldEE(z, n0, q);*/
+				/* z=0: initializes both neuron prop and conMat randomly, with conMatEE as SW
+				   z=1: neuron prop are read from file; initializes only conMat randomly with conMatEE as SW
+				   z=2: reads both neuron prop & conMat from files */				
+			}
+
+			/*if (iter_Count == 1)
+			{
+				nc2 = nw.AddInhibitoryConnection();
+			}*/
+
+			source = master;
+			tag = 5;
+			MPI::COMM_WORLD.Recv ( &nc1, 1, network_condition, source, tag, status );
+			
+			//nw.CopyNetworkCondition(nc1,0); // 0 for copying only neuronProp; !=0 for copying conMat too
+			//nw.CopyNetworkCondition(nc1,2); // for getting final pop behavior
+			if (First_Time)
+			{
+				nw.CopyNetworkCondition(nc1,2); // 0 for copying only neuronProp; !=0 for copying conMat too
+				Pre_Mutation = 1;
+				nw.SumConMat(1,Pre_Mutation); // to compute EEsum
+				nw.SumConMat(2,Pre_Mutation); // to compute EIsum
+				nw.SumConMat(3,Pre_Mutation); // to compute IEsum
+				nw.SumConMat(4,Pre_Mutation); // to compute IIsum
+
+				//nc2 = nw.MutatateNetwork(iter_Count,1); // 1 for pseudoMutating
+				// nc2 = nw.MutatateNetworkG(iter_Count,1);
+				nc2 = nw.MutatateNetworkHybrid(iter_Count,1);
+			}
+			else 
+			{
+				nw.CopyNetworkCondition(nc1,2); // !=0 for copying both neuronProp & conMat too
+				Pre_Mutation = 1;
+				nw.SumConMat(1,Pre_Mutation); // to compute EEsum
+				nw.SumConMat(2,Pre_Mutation); // to compute EIsum
+				nw.SumConMat(3,Pre_Mutation); // to compute IEsum
+				nw.SumConMat(4,Pre_Mutation); // to compute IIsum
+
+				//nc2 = nw.MutatateNetwork(iter_Count,0); // 0 for mutating,
+				// nc2 = nw.MutatateNetworkG(iter_Count,0);
+				nc2 = nw.MutatateNetworkHybrid1(iter_Count,0);
+				/*if ( iter_Count < 100 )
+					nc2 = nw.MutatateNetworkHybrid1(iter_Count,0); // mutation for first half evolutions 
+				if ( iter_Count >= 100 && iter_Count < 300 )
+					nc2 = nw.MutatateNetworkHybrid0(iter_Count,0); // relaxation for second half
+				if ( iter_Count >= 300 && iter_Count < 400 )
+					nc2 = nw.MutatateNetworkHybrid1(iter_Count,0);
+				if ( iter_Count >= 400 ) 
+					nc2 = nw.MutatateNetworkHybrid0(iter_Count,0);*/
+			}
+			// if (First_Time) nc2 = nw.MutatateNetworkG(iter_Count,1);
+			// else nc2 = nw.MutatateNetworkG(iter_Count,0);
+			//if (First_Time) nc2 = nw.MutatateNetworkHybrid(iter_Count,1);
+			//else nc2 = nw.MutatateNetworkHybrid(iter_Count,0);
+			//nc2 = nw.MutatateNetworkG(iter_Count,1); // 0 for mutating, 1 for pseudoMutating
+			
+			Pre_Mutation = 0;
+			nw.SumConMat(1,Pre_Mutation); // to compute EEsum
+			nw.SumConMat(2,Pre_Mutation); // to compute EIsum
+			nw.SumConMat(3,Pre_Mutation); // to compute IEsum
+			nw.SumConMat(4,Pre_Mutation); // to compute IIsum
+			target = master;
+			tag = 2;
+			MPI::COMM_WORLD.Send ( &nc2, 1, network_condition, target, tag );
+		}
+		else // ( process_id == master )
+		{
+			if (First_Time)
+			{
+				int z = 2;
+				nc1 = nw.Initialize(z);
+				// nc1 = nw.InitializeG(z); //Graded Synapses
+				// z=0: initializes both neuron prop and conMat randomly
+				// z=1: neuron prop are read from file; initializes only conMat randomly 
+				// z=2: reads both neuron prop & conMat from files
+				// z=3: neuron prop are read from file; initializes EE read from file and rest of conMat randomly
+
+				/*int z = 1;
+				int n0 = 8;
+				double q = 0.05; //probability with which each edge is randomly altered
+				nc1 = nw.InitializeSmallWorldEE(z, n0, q);*/
+				/* z=0: initializes both neuron prop and conMat randomly, with conMatEE as SW
+				   z=1: neuron prop are read from file; initializes only conMat randomly with conMatEE as SW
+				   z=2: reads both neuron prop & conMat from files */
+
+				for ( process = 1; process <= process_num-1; process++ )
+				{
+					target = process;
+					tag = 5;
+					MPI::COMM_WORLD.Send ( &nc1, 1, network_condition, target, tag );
+									
+				}
+
+				/*for ( process = 1; process <= process_num-1; process++ )
+				{
+					nw.synSinh = 0.006*(process-1);
+				}*/
+
+			}
+
+			for ( process = 1; process <= process_num-1; process++ ) 
+			{
+				source = process;
+				tag = 2;
+				MPI::COMM_WORLD.Recv ( &nc2, 1, network_condition, source, tag, status );
+				nc[process] = nc2;
+			}
+			
+		}		
+		
+		if ( process_id != master )
+		{
+			// calculate the output of the estimation function
+			// and then return it as simulation_result
+			if (First_Time)
+			{				
+				ostringstream stream;
+				stream << "neuronData" << file_id << ".txt";
+				nw.Execute(T, t_dispStep, t_saveStep, Tws, stream.str().c_str());
+			}
+			else	nw.ExecuteNoWrite(T, t_dispStep, t_saveStep, Tws);
+
+			//nr1 = nw.EvalVariability();
+			
+			//nr1 = nw.EvalCCtokyo();
+			
+			//nr1 = nw.EvalCC();
+			//nr1 = nw.EvalCC1();
+			//nr1 = nw.EvalCC2();
+			nr1 = nw.EvalPopNeuronBurstCC(); //classic
+			//nr1 = nw.EvalPopNeuronBurstCC01();
+			//nr1 = nw.EvalPopNeuronBurstCC02(); //ectopic
+		  
+			target = master;
+			tag = 3;
+			MPI::COMM_WORLD.Send ( &nr1, 1, simulation_result, target, tag );
+		} 
+		else // ( process_id == master ) Process 0 expects to receive N-1 partial results.
+		{			
+			//ErrorSum_new = Error_Max;
+			best_process_id = 0;
+
+			double* EvalArray;
+			EvalArray = new double[process_num-1];
+			int* EvalArrayInt;
+			EvalArrayInt = new int[process_num-1];
+			double* EvalArrayCopy;
+			EvalArrayCopy = new double[process_num-1];
+			double* Eval2Array;
+			Eval2Array = new double[process_num-1];
+			int* EvalArrayIndex;
+			EvalArrayIndex = new int[process_num-1];
+			int* IndexSorted;
+			IndexSorted = new int[process_num-1];
+
+			
+			for ( process = 1; process <= process_num-1; process++ )
+			{
+				source = process;
+				tag = 3;
+			  
+				MPI::COMM_WORLD.Recv ( &nr1, 1, simulation_result, source, tag, status );
+				nr[process] = nr1;
+				EvalArray[process-1] = nr[process].eval;
+				EvalArrayInt[process-1] = round(100000*nr[process].eval);
+				EvalArrayCopy[process-1] = nr[process].eval;
+				Eval2Array[process-1] = nr[process].eval2;
+				EvalArrayIndex[process-1] = process;
+				
+				for (int i=0; i<=CCxbins; i++)
+				{					
+					Cy0[i][process-1] =  nr[process].CCy[i];
+				}
+
+			}
+			
+			
+			for ( process = 1; process <= process_num-1; process++ )
+			{
+				cout << "EvalArrayIndexB[" << process-1 << "] = " << EvalArrayIndex[process-1] << "\t EvalArrayB[" << process-1 << "] = " << EvalArray[process-1] << "\t Eval2ArrayB[" << process-1 << "] = " << Eval2Array[process-1] << endl;
+			}
+
+			nw.DoubleSort(EvalArray,Eval2Array,EvalArrayIndex,IndexSorted,process_num-1,1);
+			
+			for ( process = 1; process <= process_num-1; process++ )
+			{
+				cout << "EvalArrayA[" << IndexSorted[process-1] << "] = " << EvalArrayCopy[IndexSorted[process-1]-1] << "\t Eval2ArrayA[" << IndexSorted[process-1] << "] = " << Eval2Array[IndexSorted[process-1]-1] << endl;
+			}
+
+			best_process_id = EvalArrayIndex[process_num-2];
+			nc1 = nc[best_process_id];
+			ErrorSum_new = nr[best_process_id].eval;
+			Error2_new = nr[best_process_id].eval2;
+
+			if (First_Time)
+			{
+				int bp_id;
+				for (int k=0; k<NoBestNGs; k++)
+				{
+					bp_id = IndexSorted[process_num-2-k];
+					ncNewBest[k] = nc[bp_id];
+					nrNewBest[k] = nr[bp_id];
+					ncPastBest[k] = ncNewBest[k];
+					nrPastBest[k] = nrNewBest[k];
+					cout << k << "\t bp_id = " << bp_id << "\t ncNewBest[" << k << "] = " << nrNewBest[k].eval << endl;
+
+					ostringstream stream;
+					stream << "Initial" << Job_id << "ConMat0_" << k << ".txt";
+					ofstream file00b;
+					file00b.open (stream.str().c_str());
+					for (int i=0; i<NoN; i++)
+					{
+						for (int j=0; j<NoN; j++)
+						{
+							if (j==NoN-1)file00b << ncNewBest[k].conMat[i][j] << endl;
+							else file00b << ncNewBest[k].conMat[i][j] << "\t" ;
+						}
+					}
+					file00b.close();
+				}
+			}
+			else
+			{
+				double* bestEvals;
+				bestEvals = new double[2*NoBestNGs];
+				double* bestEvals2;
+				bestEvals2 = new double[2*NoBestNGs];
+				double* bestEvalsCopy;
+				bestEvalsCopy = new double[2*NoBestNGs];
+				double* bestEvals2Copy;
+				bestEvals2Copy = new double[2*NoBestNGs];
+				int* bestEvalsIndex;
+				bestEvalsIndex = new int[2*NoBestNGs];
+				int* bestEvalsIndexSorted;
+				bestEvalsIndexSorted = new int[2*NoBestNGs];
+				int* best_proID;
+				best_proID = new int[NoBestNGs];
+				for ( int j = 0; j < NoBestNGs; j++ )
+				{
+					best_proID[j] = IndexSorted[process_num-2-j];
+					bestEvals[j] = nr[best_proID[j]].eval;
+					bestEvals2[j] = nr[best_proID[j]].eval2;
+					bestEvalsCopy[j] = nr[best_proID[j]].eval;
+					bestEvals2Copy[j] = nr[best_proID[j]].eval2;
+					bestEvalsIndex[j] = j;
+					cout << "best_proID[" << j << "] = " << IndexSorted[process_num-2-j] 
+						<< "\t bestEvals[" << j << "] = " << bestEvals[j] 
+						<< "\t bestEvals2[" << j << "] = " << bestEvals2[j] << endl;
+				}
+			
+				for ( int i = 0; i < NoBestNGs; i++ )
+				{
+					bestEvals[NoBestNGs+i] = nrPastBest[i].eval;
+					bestEvals2[NoBestNGs+i] = nrPastBest[i].eval2;
+					bestEvalsCopy[NoBestNGs+i] = nrPastBest[i].eval;
+					bestEvals2Copy[NoBestNGs+i] = nrPastBest[i].eval2;
+					bestEvalsIndex[NoBestNGs+i] = NoBestNGs+i;
+					cout << "bestEvals[" << NoBestNGs+i << "] = " << bestEvals[NoBestNGs+i] 
+						<< "\t bestEvals2[" << NoBestNGs+i << "] = " << bestEvals2[NoBestNGs+i] << endl;
+				}
+
+				for (int i=0; i<2*NoBestNGs; i++)
+				{
+					cout << "bestEvalsIndexB[" << i << "] = " << bestEvalsIndex[i] 
+						<< "\t bestEvalsB[" << i << "] = " << bestEvals[i] 
+						<< "\t bestEvals2B[" << i << "] = " << bestEvals2[i] << endl;
+				}
+
+				nw.DoubleSort(bestEvals,bestEvals2,bestEvalsIndex,bestEvalsIndexSorted,2*NoBestNGs,0);
+
+				for ( int i=0; i<2*NoBestNGs; i++ )
+				{
+					cout << "bestEvalsIndexSortedA[" << i << "] = " << bestEvalsIndexSorted[i] 
+						<< "\t bestEvalsA[" << bestEvalsIndexSorted[i] << "] = " << bestEvals[bestEvalsIndexSorted[i]] 
+						<< "\t bestEvals2A[" << bestEvalsIndexSorted[i] << "] = " << bestEvals2[bestEvalsIndexSorted[i]] << endl;
+				}
+
+				int sIndex;
+				for ( int i=0; i<NoBestNGs; i++ )
+				{
+					//sIndex = bestEvalsIndexSorted[(2*NoBestNGs-1)-i];
+					sIndex = i;
+					if ( sIndex >= NoBestNGs )
+					{
+						nrNewBest[i] = nrPastBest[sIndex-NoBestNGs];
+						ncNewBest[i] = ncPastBest[sIndex-NoBestNGs];
+					}
+					else
+					{
+						nrNewBest[i] = nr[best_proID[sIndex]];
+						ncNewBest[i] = nc[best_proID[sIndex]];
+					}
+					cout << "sIndex = " << sIndex << "\t nrNewBest[" << i << "].eval = " << nrNewBest[i].eval << "\t nrNewBest[" << i << "].eval2 = " << nrNewBest[i].eval2 << endl;
+				}
+
+				delete [] bestEvals;
+				delete [] bestEvals2;
+				delete [] bestEvalsCopy;
+				delete [] bestEvals2Copy;
+				delete [] bestEvalsIndex;
+				delete [] bestEvalsIndexSorted;
+				delete [] best_proID;
+
+				//if ( nrNewBest[NoBestNGs-1].eval>nrNewBest[0].eval )
+				//{					
+					for (int i=0; i<NoBestNGs; i++)
+					{
+						nrPastBest[i] = nrNewBest[i];
+						ncPastBest[i] = ncNewBest[i];
+					}
+					cout << "NewBest copied to PastBest; Continue Iteration !!!" << endl;
+				//}
+				/*else if ( nrNewBest[0].eval==0 )
+				{
+					pastBest = pastBestLimit;
+					cout << "Halt Iteration !!!" << endl;
+				}*/
+			}
+
+			if (ErrorSum_new < ErrorSum_old) 
+			{	
+				cout << "ErrorSum_new = " << ErrorSum_new << " \t ErrorSum_old = " << ErrorSum_old << endl;
+				cout << "Error2_new = " << Error2_new << " \t Error2_old = " << Error2_old << endl;
+				ErrorSum_old = ErrorSum_new;
+				Error2_old = 0;				
+				//cout << "Cxx \t Cyy" << endl;
+				for (int i=0; i<=CCxbins; i++)
+				{
+					Cyy[i][p] = nrNewBest[0].CCy[i];
+					//cout << nrNewBest[0].CCx[i] << "\t" << nrNewBest[0].CCy[i] << "\t" << Cyy[i][p] << endl;
+				}
+				p = p + 1;
+				pp = 0;
+				pastBest = 0;
+			}
+			else 
+			{
+				if ( int(100*ErrorSum_new)==int(100*ErrorSum_old) && (Error2_new > Error2_old) )
+				{
+					cout << "ErrorSum_new = " << ErrorSum_new << " \t ErrorSum_old = " << ErrorSum_old << endl;
+					cout << "Error2_new = " << Error2_new << " \t Error2_old = " << Error2_old << endl;
+					ErrorSum_old = ErrorSum_new;
+					Error2_old = Error2_new;
+					//cout << "Cxx \t Cyy" << endl;
+					for (int i=0; i<=CCxbins; i++)
+					{
+						Cyy[i][p] = nrNewBest[0].CCy[i];
+						//cout << nrNewBest[0].CCx[i] << "\t" << nrNewBest[0].CCy[i] << "\t" << Cyy[i][p] << endl;
+					}
+					pp = pp + 1;
+					pastBest = 0;
+				}
+				else
+				{
+					cout << "ErrorSum_new = " << ErrorSum_new << " \t ErrorSum_old = " << ErrorSum_old << endl;
+					cout << "Error2_new = " << Error2_new << " \t Error2_old = " << Error2_old << endl;
+					pastBest = pastBest + 1;
+				}
+			}
+
+			cout << "p = " << p << "\t pp = " << pp << "\t pastBest = " << pastBest << endl;
+			
+
+			int SolCount = 1;
+			for ( process = 1; process <= process_num-1; process++ )
+			{
+				target = process;
+				tag = 5;
+				if ( process > SolCount*round((process_num-1)/NoBestNGs) ) SolCount = SolCount + 1;				
+				
+				nc1 = ncNewBest[SolCount-1];
+				//cout << "process: " << process << "\t nc1.NetTag = " << nc1.NetTag << endl;
+				MPI::COMM_WORLD.Send ( &nc1, 1, network_condition, target, tag );
+			}
+
+			delete [] EvalArray;
+			delete [] EvalArrayCopy;
+			delete [] Eval2Array;
+			delete [] EvalArrayIndex;
+			delete [] IndexSorted;
+
+			/*for (int i=0; i<=CCxbins; i++)
+			{
+				Cyy[i][iter_Count] = nr[best_process_id].CCy[i];
+				//cout << "nr[best_process_id].CCy[" << i << "] = " << nr[best_process_id].CCy[i] << "\t Cyy[" << i << "][" << positiveIteration << "] = " << Cyy[i][positiveIteration] << endl;
+			}*/	
+
+			cout << "\n \n Iteration " << iter_Count << " complete !!! \n \n \n" << endl;
+
+		}
+
+		MPI::COMM_WORLD.Barrier();
+		
+		MPI::COMM_WORLD.Bcast(&ErrorSum_new, 1, MPI_DOUBLE, master);
+		MPI::COMM_WORLD.Bcast(&ErrorSum_old, 1, MPI_DOUBLE, master);
+		MPI::COMM_WORLD.Bcast (&pastBest, 1, MPI_INT, master);
+		//cout << "process_id: " << process_id << " reached to the end of while loop.\n"
+		//	<< "\t ErrorSum_old = " << ErrorSum_old
+		//	<< "\t ErrorSum_new = " << ErrorSum_new << "\n";
+		
+		iter_Count = iter_Count + 1;
+		First_Time = false;
+
+	} // while (ErrorSum_new < ErrorSum_old) ...
+
+	//
+	//  The master process prints the answer.
+	//
+
+	
+
+	if ( process_id == master )
+	{
+		ofstream file1a;
+		ostringstream stream0q;
+		stream0q << "Final" << Job_id << "ConMat0.txt";
+		file1a.open (stream0q.str().c_str());
+		for (int i=0; i<NoN; i++)
+		{
+			for (int j=0; j<NoN; j++)
+			{
+				if (j==NoN-1)file1a << ncNewBest[0].conMat[i][j] << endl;
+				else file1a << ncNewBest[0].conMat[i][j] << "\t" ;
+			}
+		}
+		file1a.close();
+
+		
+		/*for (int k=0; k<NoBestNGs; k++)
+		{
+			ostringstream stream;
+			stream << "FinalConMat0_" << k << ".txt";
+			ofstream file00a;
+			file00a.open (stream.str().c_str());
+			for (int i=0; i<NoN; i++)
+			{
+				for (int j=0; j<NoN; j++)
+				{
+					if (j==NoN-1)file00a << ncNewBest[k].conMat[i][j] << endl;
+					else file00a << ncNewBest[k].conMat[i][j] << "\t" ;
+				}
+			}
+			file00a.close();
+		}*/
+
+		
+		/*double AvgConMat;
+		ofstream fileZa;
+		fileZa.open ("AveragedFinalConMat0.txt");
+		for (int i=0; i<NoN; i++)
+		{
+			for (int j=0; j<NoN; j++)
+			{
+				AvgConMat = 0;
+				for (int k=0; k<NoBestNGs; k++)
+				{
+					AvgConMat = AvgConMat + double(ncNewBest[k].conMat[i][j]);
+				}
+				AvgConMat = AvgConMat/double(NoBestNGs);
+				if (j==NoN-1) fileZa << AvgConMat << endl;
+				else fileZa << AvgConMat << "\t" ;
+			}
+		}
+		fileZa.close();*/
+
+		/*ofstream file3b;
+		file3b.open ("CumFracAll0.txt");
+		for (int i=0; i<=CCxbins; i++)
+		{
+			for (int j=0; j<NCP-1; j++)
+			{
+				if (j==0) file3b << nrNewBest[0].CCx[i] << "\t" << Cy0[i][j] << "\t";
+				else if (j==NCP-2) file3b << Cy0[i][j] << endl;
+				else file3b << Cy0[i][j] << "\t" ;
+			}
+		}
+		file3b.close();*/
+		
+		ofstream file1b;
+		ostringstream stream0y;
+		stream0y << "Cum" << Job_id << "Frac0.txt";
+		file1b.open (stream0y.str().c_str());
+		for (int i=0; i<=CCxbins; i++)
+		{
+			for (int j=0; j<=NOI; j++)
+			{
+				if (j==0) file1b << nrNewBest[0].CCx[i] << "\t" << Cyy[i][j] << "\t";
+				else if (j==NOI) file1b << Cyy[i][j] << endl;
+				else file1b << Cyy[i][j] << "\t" ;
+			}
+		}
+		file1b.close();
+
+		/*ofstream file1c;
+		file1c.open ("inSyn0.txt");
+		for (int i=0; i<NoN; i++)
+		{
+			for (int j=0; j<=NOI; j++)
+			{
+				if (j==NOI) file1c << inSyn[i][j] << endl;
+				else file1c << inSyn[i][j] << "\t" ;
+			}
+		}
+		file1c.close();*/
+
+		/*ofstream file1d;
+		file1d.open ("outSyn0.txt");
+		for (int i=0; i<NoN; i++)
+		{
+			for (int j=0; j<=NOI; j++)
+			{
+				if (j==NOI) file1d << outSyn[i][j] << endl;
+				else file1d << outSyn[i][j] << "\t" ;
+			}
+		}
+		file1d.close();*/
+
+		cout << "completed!!!" << endl;
+
+		end_time = MPI::Wtime ( );
+
+		cout << "\n";
+		cout << "  Elapsed wall clock seconds = "
+			<< end_time - start_time << "\n";
+	}
+	//
+	//  Shut down MPI.
+	//
+
+	MPI::Finalize();
+	if ( process_id == master )
+	{
+		cout << "\n";
+		cout << "INTERVALS - Master process:\n";
+		cout << "  Normal end of execution.\n";
+	}
+
+	return 0;
+}
